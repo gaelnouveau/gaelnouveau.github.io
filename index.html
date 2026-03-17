@@ -1,11 +1,575 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Mon Application</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Creator Pro — Automate Your TikTok Content</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050508;
+    --surface: #0e0e14;
+    --border: #1e1e2e;
+    --accent: #ff2d55;
+    --accent2: #ff6b35;
+    --text: #f0f0f5;
+    --muted: #7a7a9a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(5,5,8,0.85);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: var(--accent); }
+
+  nav ul {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: white !important;
+    padding: 0.55rem 1.3rem;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(255,45,85,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,45,85,0.1);
+    border: 1px solid rgba(255,45,85,0.3);
+    color: var(--accent);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    max-width: 900px;
+    animation: fadeUp 0.7s ease;
+  }
+
+  h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 1.2rem;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 1.5rem auto 2.5rem;
+    line-height: 1.7;
+    font-weight: 300;
+    animation: fadeUp 0.8s ease;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.9s ease;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(255,45,85,0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(255,45,85,0.5);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--muted); }
+
+  /* STATS */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-top: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  /* HOW IT WORKS */
+  .section {
+    padding: 6rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 520px;
+    line-height: 1.7;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .step-card:hover { border-color: rgba(255,45,85,0.4); }
+
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: rgba(255,45,85,0.15);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .step-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: transform 0.2s, border-color 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,45,85,0.3);
+  }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,45,85,0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .feature-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+  /* USE CASES */
+  .use-cases {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .use-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin-top: 4rem;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .use-case {
+    background: var(--surface);
+    padding: 2rem;
+  }
+
+  .use-case-tag {
+    display: inline-block;
+    background: rgba(255,45,85,0.1);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .use-case-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .use-case-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 8rem 2rem;
+    position: relative;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(255,45,85,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+  }
+
+  footer a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+  footer a:hover { color: var(--text); }
+  .footer-links { display: flex; gap: 2rem; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .section { padding: 4rem 1.5rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
 </head>
 <body>
-  <h1>Mon Application TikTok</h1>
-  <p>Application en cours de développement.</p>
+
+<nav>
+  <div class="logo">Video<span>Creator</span>Pro</div>
+  <ul>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#use-cases">Use cases</a></li>
+    <li><a href="privacy.html">Privacy</a></li>
+  </ul>
+  <a href="#get-started" class="nav-cta">Get Started</a>
+</nav>
+
+<section class="hero">
+  <div class="badge">🚀 AI-Powered Content Automation</div>
+  <h1>Create & publish <span class="gradient">TikTok videos</span> on autopilot</h1>
+  <p class="hero-sub">Video Creator Pro automatically discovers trending topics, generates scripts, produces AI voiceovers & avatar videos, and publishes directly to TikTok — fully automated.</p>
+  <div class="hero-buttons">
+    <a href="#get-started" class="btn-primary">Start for free →</a>
+    <a href="#how" class="btn-secondary">See how it works</a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-num">4x</div>
+    <div class="stat-label">Videos per day, automatically</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">$0.36</div>
+    <div class="stat-label">Average cost per video</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Hands-free publishing</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">60+</div>
+    <div class="stat-label">Trends analyzed per run</div>
+  </div>
+</div>
+
+<section class="section" id="how">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title">From trend to published video<br>in minutes</h2>
+  <p class="section-sub">Our fully automated pipeline handles every step of content creation and distribution for TikTok creators.</p>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">📊</div>
+      <div class="step-title">Trend Discovery</div>
+      <div class="step-desc">Automatically scans TikTok for viral hashtags and trending topics every 6 hours.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">✍️</div>
+      <div class="step-title">Script Generation</div>
+      <div class="step-desc">AI writes engaging, platform-optimized scripts tailored to each trending topic.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">🎙️</div>
+      <div class="step-title">AI Voiceover</div>
+      <div class="step-desc">Natural-sounding AI voice narrates your script with perfect pacing and tone.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">🎬</div>
+      <div class="step-title">Avatar Video</div>
+      <div class="step-desc">AI avatar presenter brings your content to life with realistic video generation.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">05</div>
+      <div class="step-icon">📱</div>
+      <div class="step-title">Auto Publish</div>
+      <div class="step-desc">Videos are automatically published to TikTok via the official Content Posting API.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Everything you need to scale<br>your TikTok presence</h2>
+  <p class="section-sub">Built for serious content creators who want to grow without spending hours on manual work.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Fully Automated Pipeline</div>
+      <div class="feature-desc">Set it and forget it. The system runs on a schedule and handles everything from trend research to publishing.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <div class="feature-title">Performance Tracking</div>
+      <div class="feature-desc">Every published video is logged with metadata, timestamps and publish status in Google Sheets.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <div class="feature-title">Email Notifications</div>
+      <div class="feature-desc">Receive email alerts every time a new video is successfully published to your TikTok account.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">Trend-Optimized Content</div>
+      <div class="feature-desc">Scripts and hashtags are generated based on real-time trending data for maximum reach.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">Official API Integration</div>
+      <div class="feature-desc">Uses TikTok's official Content Posting API — safe, compliant, and reliable publishing.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <div class="feature-title">AI Avatar Presenter</div>
+      <div class="feature-desc">Choose from realistic AI avatars to represent your brand without showing your face.</div>
+    </div>
+  </div>
+</section>
+
+<section class="use-cases" id="use-cases">
+  <div class="section" style="padding-top:6rem;padding-bottom:6rem;">
+    <div class="section-label">Use Cases</div>
+    <h2 class="section-title">Built for creators of all kinds</h2>
+    <p class="section-sub">Whether you're a solo creator or managing multiple accounts, Video Creator Pro adapts to your needs.</p>
+
+    <div class="use-cases-grid">
+      <div class="use-case">
+        <div class="use-case-tag">Solo Creators</div>
+        <div class="use-case-title">Grow without burning out</div>
+        <div class="use-case-desc">Publish consistently every day without spending hours editing. Focus on strategy while the AI handles production.</div>
+      </div>
+      <div class="use-case">
+        <div class="use-case-tag">Agencies</div>
+        <div class="use-case-title">Scale client content</div>
+        <div class="use-case-desc">Manage multiple TikTok accounts and deliver high-volume content at a fraction of the manual cost.</div>
+      </div>
+      <div class="use-case">
+        <div class="use-case-tag">Brands</div>
+        <div class="use-case-title">Always-on brand presence</div>
+        <div class="use-case-desc">Maintain a consistent posting schedule and stay on top of trends without a dedicated social media team.</div>
+      </div>
+      <div class="use-case">
+        <div class="use-case-tag">Marketers</div>
+        <div class="use-case-title">Test content at scale</div>
+        <div class="use-case-desc">Quickly produce and publish multiple content angles to discover what resonates with your audience.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="get-started">
+  <div class="section-label">Get Started</div>
+  <h2 class="section-title" style="max-width:600px;margin:0 auto 1rem;">Ready to automate your TikTok content?</h2>
+  <p style="color:var(--muted);margin-bottom:2.5rem;font-size:1.05rem;">Connect your TikTok account and start publishing AI-generated videos today.</p>
+  <a href="mailto:contact@videocreatorpro.app" class="btn-primary">Contact Us →</a>
+</section>
+
+<footer>
+  <div class="logo">Video<span>Creator</span>Pro</div>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="mailto:contact@videocreatorpro.app">Contact</a>
+  </div>
+  <div style="color:var(--muted);font-size:0.8rem;">© 2026 Video Creator Pro. All rights reserved.</div>
+</footer>
+
 </body>
 </html>
